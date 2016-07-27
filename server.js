@@ -3,7 +3,10 @@ var app     = express();
 var path    = require('path');
 var mongodb = require('mongodb');
 var MongoClient = require('mongodb').MongoClient;
-
+var bodyParser = require( 'body-parser' );
+var ObjectID = mongodb.ObjectID;
+app.use( bodyParser.json() );
+app.use( express.static('client'));
 
 
 var url = 'mongodb://localhost:27017/bucketList';
@@ -15,7 +18,6 @@ app.get('/', function(req, res){
 })
 
 //INDEX
-
 app.get('/bucketlist', function(req, res) {
   MongoClient.connect( url, function( err, db ) {
     var collection = db.collection( 'countries' )
@@ -33,7 +35,14 @@ app.get('/bucketlist', function(req, res) {
 
 // CREATE
 app.post('/bucketlist', function(req, res) {
-  res.send("CREATE bucketlist route");
+
+  MongoClient.connect( url, function( err, db ) {
+     var collection = db.collection( 'countries' );
+     collection.insert( req.body )
+     res.status(200).end();
+     db.close();
+   })
+
 });
 
 // // SHOW
@@ -51,10 +60,16 @@ app.post('/bucketlist', function(req, res) {
 //   res.send("UPDATE bucketlist route");
 // });
 
-// // DELETE
-// app.delete('/bucketlist/:id', function(req, res) {
-//   res.send("DELETE bucketlist route");
-// });
+// DELETE
+app.delete('/bucketlist/:id', function(req, res) {
+  MongoClient.connect( url, function(err, db) {
+     var collection = db.collection( 'countries' );
+
+     collection.remove( { _id: new ObjectID(req.params.id) } );
+     res.status(200).end();
+     db.close();
+   })
+});
 
 app.listen('3000', function(){
   console.log('The magic is all happening on port 3000');
