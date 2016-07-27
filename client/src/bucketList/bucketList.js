@@ -2,7 +2,7 @@ var bucketList = function() {
   this.countries = [];
 }
 
-BuckList.prototype = {
+bucketList.prototype = {
   addCountry: function(country) {
     this.countries.push(country);
   }

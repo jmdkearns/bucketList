@@ -1,7 +1,10 @@
 var express = require('express');
 var app     = express();
 var path    = require('path');
-var mongodb = require('mongodb').MongoClient;
+var mongodb = require('mongodb');
+var MongoClient = require('mongodb').MongoClient;
+
+
 
 var url = 'mongodb://localhost:27017/bucketList';
 
@@ -15,10 +18,12 @@ app.get('/', function(req, res){
 
 app.get('/bucketlist', function(req, res) {
   MongoClient.connect( url, function( err, db ) {
-    var collection = db.collection( 'bucketList' )
-    collection.find({}).toArray( function( err, docs ) {
+    var collection = db.collection( 'countries' )
+      collection.find({}).toArray( function( err, docs ) {
       res.json( docs );
       db.close();
+    })
+  })
 })
 
 // // NEW
@@ -26,10 +31,10 @@ app.get('/bucketlist', function(req, res) {
 //   res.send("New country to bucketlist");
 // });
 
-// // CREATE
-// app.post('/bucketlist', function(req, res) {
-//   res.send("CREATE bucketlist route");
-// });
+// CREATE
+app.post('/bucketlist', function(req, res) {
+  res.send("CREATE bucketlist route");
+});
 
 // // SHOW
 // app.get('/bucketlist/:id', function(req, res){
